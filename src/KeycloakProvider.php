@@ -4,6 +4,7 @@ namespace Avdevs\Keycloak;
 
 use Exception;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
@@ -131,11 +132,7 @@ class KeycloakProvider extends AbstractProvider
         if ($this->usesEncryption()) {
             return json_decode(
                 json_encode(
-                    JWT::decode(
-                        $response,
-                        $this->encryptionKey,
-                        array($this->encryptionAlgorithm)
-                    )
+                    JWT::decode($response, new Key($this->encryptionKey, array($this->encryptionAlgorithm)))
                 ),
                 true
             );
